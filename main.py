@@ -1,6 +1,6 @@
 import asyncio
 import edge_tts
-from flask import Flask, Response, copy_current_request_context, request, send_file, stream_with_context
+from flask import Flask, Response, request, send_file
 
 OUTPUT_FILE = "test.mp3"
 app = Flask(__name__)
@@ -36,7 +36,7 @@ async def tts():
 
     communicate = edge_tts.Communicate(text, voice)
     await communicate.save(file_name)
-    return send_file(OUTPUT_FILE, mimetype='audio/mpeg')
+    return send_file(file_name, mimetype='audio/mpeg')
 
 
 @app.route('/tts/stream', methods=['POST'])
