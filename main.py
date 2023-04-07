@@ -6,15 +6,6 @@ OUTPUT_FILE = "test.mp3"
 app = Flask(__name__)
 
 
-async def _main(text, voice, file_name) -> None:
-    communicate = edge_tts.Communicate(text, voice)
-    await communicate.save(file_name)
-
-
-def main(text, voice, file_name) -> None:
-    asyncio.get_event_loop().run_until_complete(_main(text, voice, file_name))
-
-
 async def stream_audio(text, voice) -> None:
     communicate = edge_tts.Communicate(text, voice)
     async for chunk in communicate.stream():
@@ -43,7 +34,8 @@ async def tts():
     voice = data.get('voice', 'zh-CN-YunxiNeural')
     file_name = data.get('file_name', OUTPUT_FILE)
 
-    await _main(text, voice, file_name)
+    communicate = edge_tts.Communicate(text, voice)
+    await communicate.save(file_name)
     return send_file(OUTPUT_FILE, mimetype='audio/mpeg')
 
 
