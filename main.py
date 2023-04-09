@@ -1,9 +1,11 @@
 import asyncio
 import edge_tts
 from flask import Flask, Response, request, send_file
+from flask_cors import CORS
 
 OUTPUT_FILE = "test.mp3"
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 
 
 async def stream_audio(text, voice) -> None:
@@ -11,8 +13,6 @@ async def stream_audio(text, voice) -> None:
     async for chunk in communicate.stream():
         if chunk["type"] == "audio":
             yield chunk["data"]
-        elif chunk["type"] == "WordBoundary":
-            print(f"WordBoundary: {chunk}")
 
 
 def audio_generator(text, voice):
@@ -45,7 +45,7 @@ async def stream_audio_route():
     text = data['text']
     voice = data.get('voice', 'zh-CN-YunxiNeural')
 
-    return Response((audio_generator(text, voice)), content_type='audio/mpeg')
+    return Response((audio_generator(text, voice)), content_type='application/octet-stream')
 
 
 if __name__ == "__main__":
