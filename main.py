@@ -1,6 +1,6 @@
 import asyncio
 import edge_tts
-from flask import Flask, Response, request, send_file
+from flask import Flask, Response, jsonify, request, send_file
 from flask_cors import CORS
 
 OUTPUT_FILE = "test.mp3"
@@ -26,6 +26,16 @@ def audio_generator(text, voice):
             break
 
 
+def make_response(code, message, data=None):
+    response = {
+        'code': code,
+        'message': message,
+    }
+    if data is not None:
+        response['data'] = data
+    return jsonify(response)
+
+
 @app.route('/tts', methods=['POST'])
 async def tts():
     data = request.get_json()
@@ -46,6 +56,15 @@ async def stream_audio_route():
     voice = data.get('voice', 'zh-CN-YunxiNeural')
 
     return Response((audio_generator(text, voice)), content_type='application/octet-stream')
+
+
+@app.route('/voices', methods=['GET'])
+async def voices():
+    try:
+        voices = await edge_tts.list_voices()
+        return make_response(200, 'OK', voices)
+    except Exception as e:
+        return make_response(500, str(e))
 
 
 if __name__ == "__main__":
