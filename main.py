@@ -3,7 +3,7 @@ import edge_tts
 from flask import Flask, Response, jsonify, request, send_file
 from flask_cors import CORS
 
-OUTPUT_FILE = "test.mp3"
+OUTPUT_FILE = "/tmp/test.mp3"
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
