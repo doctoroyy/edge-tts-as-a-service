@@ -10,7 +10,7 @@ CORS(app, supports_credentials=True)
 
 async def stream_audio(text, voice) -> None:
     communicate = edge_tts.Communicate(text, voice)
-    async for chunk in communicate.stream():
+    for chunk in communicate.stream_sync():
         if chunk["type"] == "audio":
             yield chunk["data"]
 
@@ -37,7 +37,7 @@ def make_response(code, message, data=None):
 
 
 @app.route('/tts', methods=['POST'])
-async def tts():
+def tts():
     data = request.get_json()
     text = data['text']
     # voice not required
@@ -45,7 +45,7 @@ async def tts():
     file_name = data.get('file_name', OUTPUT_FILE)
 
     communicate = edge_tts.Communicate(text, voice)
-    await communicate.save(file_name)
+    communicate.save_sync(file_name)
     return send_file(file_name, mimetype='audio/mpeg')
 
 
