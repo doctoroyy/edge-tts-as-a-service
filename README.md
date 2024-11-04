@@ -18,8 +18,8 @@ A simple HTTP service that provides Text-to-Speech functionality using Microsoft
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/edge-tts-service
-cd edge-tts-service
+git clone https://github.com/doctoroyy/edge-tts-as-a-service
+cd edge-tts-as-a-service
 ```
 
 2. Install dependencies:
@@ -38,12 +38,12 @@ The service will be available at `http://localhost:5000`
 
 1. Build the image:
 ```bash
-docker build -t edge-tts-service .
+docker build -t edge-tts-as-a-service .
 ```
 
 2. Run the container:
 ```bash
-docker run -d -p 5000:5000 edge-tts-service
+docker run -d -p 5000:5000 edge-tts-as-a-service
 ```
 
 ## API Documentation

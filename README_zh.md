@@ -18,8 +18,8 @@
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/YOUR_USERNAME/edge-tts-service
-cd edge-tts-service
+git clone https://github.com/doctoroyy/edge-tts-as-a-service
+cd edge-tts-as-a-service
 ```
 
 2. 安装依赖：
@@ -38,12 +38,12 @@ python main.py
 
 1. 构建镜像：
 ```bash
-docker build -t edge-tts-service .
+docker build -t edge-tts-as-a-service .
 ```
 
 2. 运行容器：
 ```bash
-docker run -d -p 5000:5000 edge-tts-service
+docker run -d -p 5000:5000 edge-tts-as-a-service
 ```
 
 ## API 文档
