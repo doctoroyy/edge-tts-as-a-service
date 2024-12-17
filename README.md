@@ -161,6 +161,16 @@ curl -X POST http://localhost:5000/tts/stream \
     --output stream_output.mp3
 ```
 
+## Frontend Project
+
+### 🚨 React Frontend Companion Project 🚨
+
+**Looking for a ready-to-use frontend interface?**
+
+🔗 **Quick Link**: [react-audio-stream-demo](https://github.com/doctoroyy/react-audio-stream-demo)
+
+This React demo provides a fully functional frontend for seamless TTS interaction, making it easy to demonstrate and integrate the Edge-TTS service with a user-friendly interface.
+
 ## FAQ
 
 1. **Q: How do I choose the right voice?**  
