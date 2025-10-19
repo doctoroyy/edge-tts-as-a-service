@@ -8,14 +8,14 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 
-async def stream_audio(text, voice, rate='+0%', volume='+0%', pitch='+0Hz') -> None: # type: ignore
+async def stream_audio(text, voice, rate=None, volume=None, pitch=None) -> None: # type: ignore
     communicate = edge_tts.Communicate(text, voice, rate=rate, volume=volume, pitch=pitch)
     for chunk in communicate.stream_sync():
         if chunk["type"] == "audio":
             yield chunk["data"] # type: ignore
 
 
-def audio_generator(text, voice, rate='+0%', volume='+0%', pitch='+0Hz'):
+def audio_generator(text, voice, rate=None, volume=None, pitch=None):
     loop = asyncio.new_event_loop()
     coroutine = stream_audio(text, voice, rate, volume, pitch)
     while True:
