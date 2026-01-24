@@ -1,4 +1,4 @@
-edge-tts==7.0.1
+edge-tts==7.2.7
 Flask[async]==2.2.3
 Flask-Cors>=3.0.10
 Werkzeug==2.2.3
