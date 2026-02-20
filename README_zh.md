@@ -66,12 +66,6 @@ docker run -d -p 5000:5000 edge-tts-as-a-service
 GET /voices
 ```
 
-查询参数：
-
-| 参数 | 类型 | 必填 | 默认值 | 说明 |
-| --- | --- | --- | --- | --- |
-| `proxy` | string | 否 | None | 透传给 `edge_tts.list_voices(proxy=...)` 的代理地址 |
-
 响应示例：
 ```json
 {
@@ -105,7 +99,6 @@ POST /tts
     "rate": "+20%",
     "volume": "+0%",
     "pitch": "+0Hz",
-    "proxy": "http://127.0.0.1:7890",
     "connect_timeout": 10,
     "receive_timeout": 60,
     "audio_fname": "hello.mp3",
@@ -122,7 +115,6 @@ POST /tts
 | `rate` | string | 否 | `+0%` | 语速 |
 | `volume` | string | 否 | `+0%` | 音量增益 |
 | `pitch` | string | 否 | `+0Hz` | 音高 |
-| `proxy` | string/null | 否 | `None` | 代理地址 |
 | `connect_timeout` | number/null | 否 | `10` | 连接超时时间（秒） |
 | `receive_timeout` | number/null | 否 | `60` | 接收超时时间（秒） |
 | `audio_fname` | string | 否 | `/tmp/test.mp3` | 输出音频文件路径 |
@@ -152,7 +144,6 @@ POST /tts/stream
     "rate": "+20%",
     "volume": "+0%",
     "pitch": "+0Hz",
-    "proxy": "http://127.0.0.1:7890",
     "connect_timeout": 10,
     "receive_timeout": 60
 }
@@ -164,6 +155,7 @@ POST /tts/stream
 
 说明：
 - `connector` 是 Python 对象，无法通过 HTTP JSON 传入。
+- `proxy` 无法通过 HTTP JSON 传入。
 
 ## 使用示例
 

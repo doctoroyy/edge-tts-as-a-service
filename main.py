@@ -9,12 +9,7 @@ DEFAULT_VOICE = "zh-CN-YunxiNeural"
 COMMUNICATE_OPTION_KEYS = tuple(
     name
     for name in inspect.signature(edge_tts.Communicate.__init__).parameters
-    if name not in {"self", "text", "connector"}
-)
-LIST_VOICE_OPTION_KEYS = tuple(
-    name
-    for name in inspect.signature(edge_tts.list_voices).parameters
-    if name not in {"connector"}
+    if name not in {"self", "text", "connector", "proxy"}
 )
 
 app = Flask(__name__)
@@ -46,6 +41,8 @@ def parse_text(data):
 def build_communicate_kwargs(data):
     if "connector" in data:
         raise ValueError("`connector` is not supported via HTTP API.")
+    if "proxy" in data:
+        raise ValueError("`proxy` is not supported via HTTP API.")
 
     kwargs = {key: data[key] for key in COMMUNICATE_OPTION_KEYS if key in data}
     if "voice" not in kwargs:
@@ -103,12 +100,9 @@ async def voices():
     try:
         if "connector" in request.args:
             return make_response(400, "`connector` is not supported via HTTP API.")
-        list_voices_kwargs = {
-            key: request.args.get(key)
-            for key in LIST_VOICE_OPTION_KEYS
-            if key in request.args
-        }
-        voices = await edge_tts.list_voices(**list_voices_kwargs)
+        if "proxy" in request.args:
+            return make_response(400, "`proxy` is not supported via HTTP API.")
+        voices = await edge_tts.list_voices()
         return make_response(200, 'OK', voices)
     except Exception as e:
         return make_response(500, str(e))

@@ -56,12 +56,6 @@ Retrieve all supported voice options.
 GET /voices
 ```
 
-Query parameters:
-
-| Parameter | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `proxy` | string | No | None | Proxy URL passed to `edge_tts.list_voices(proxy=...)` |
-
 Response example:
 ```json
 {
@@ -95,7 +89,6 @@ Request body:
     "rate": "+20%",
     "volume": "+0%",
     "pitch": "+0Hz",
-    "proxy": "http://127.0.0.1:7890",
     "connect_timeout": 10,
     "receive_timeout": 60,
     "audio_fname": "hello.mp3",
@@ -112,7 +105,6 @@ Supported request parameters:
 | `rate` | string | No | `+0%` | Speaking rate |
 | `volume` | string | No | `+0%` | Volume gain |
 | `pitch` | string | No | `+0Hz` | Pitch |
-| `proxy` | string/null | No | `None` | Proxy URL |
 | `connect_timeout` | number/null | No | `10` | Connection timeout (seconds) |
 | `receive_timeout` | number/null | No | `60` | Receive timeout (seconds) |
 | `audio_fname` | string | No | `/tmp/test.mp3` | Output audio file path |
@@ -142,7 +134,6 @@ Request body:
     "rate": "+20%",
     "volume": "+0%",
     "pitch": "+0Hz",
-    "proxy": "http://127.0.0.1:7890",
     "connect_timeout": 10,
     "receive_timeout": 60
 }
@@ -154,6 +145,7 @@ Response:
 
 Note:
 - `connector` is a Python object and is not accepted through HTTP JSON.
+- `proxy` is not accepted through HTTP JSON.
 
 ## Usage Examples
 
