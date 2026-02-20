@@ -66,6 +66,12 @@ docker run -d -p 5000:5000 edge-tts-as-a-service
 GET /voices
 ```
 
+查询参数：
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+| --- | --- | --- | --- | --- |
+| `proxy` | string | 否 | None | 透传给 `edge_tts.list_voices(proxy=...)` 的代理地址 |
+
 响应示例：
 ```json
 {
@@ -96,9 +102,35 @@ POST /tts
 {
     "text": "你好，世界！",
     "voice": "zh-CN-YunxiNeural",  // 可选，默认为 "zh-CN-YunxiNeural"
-    "file_name": "hello.mp3"       // 可选，默认为 "test.mp3"
+    "rate": "+20%",
+    "volume": "+0%",
+    "pitch": "+0Hz",
+    "proxy": "http://127.0.0.1:7890",
+    "connect_timeout": 10,
+    "receive_timeout": 60,
+    "audio_fname": "hello.mp3",
+    "metadata_fname": "hello.vtt"
 }
 ```
+
+支持的请求参数：
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+| --- | --- | --- | --- | --- |
+| `text` | string | 是 | - | 待合成文本 |
+| `voice` | string | 否 | `zh-CN-YunxiNeural` | 音色名称 |
+| `rate` | string | 否 | `+0%` | 语速 |
+| `volume` | string | 否 | `+0%` | 音量增益 |
+| `pitch` | string | 否 | `+0Hz` | 音高 |
+| `proxy` | string/null | 否 | `None` | 代理地址 |
+| `connect_timeout` | number/null | 否 | `10` | 连接超时时间（秒） |
+| `receive_timeout` | number/null | 否 | `60` | 接收超时时间（秒） |
+| `audio_fname` | string | 否 | `/tmp/test.mp3` | 输出音频文件路径 |
+| `metadata_fname` | string/null | 否 | `None` | 元数据输出路径（`edge-tts` 字幕/元数据） |
+
+兼容别名：
+- `file_name` 仍可用，等同于 `audio_fname`。
+- `metadata_file` 仍可用，等同于 `metadata_fname`。
 
 响应：
 - Content-Type: audio/mpeg
@@ -116,13 +148,22 @@ POST /tts/stream
 ```json
 {
     "text": "你好，世界！",
-    "voice": "zh-CN-YunxiNeural"  // 可选，默认为 "zh-CN-YunxiNeural"
+    "voice": "zh-CN-YunxiNeural",
+    "rate": "+20%",
+    "volume": "+0%",
+    "pitch": "+0Hz",
+    "proxy": "http://127.0.0.1:7890",
+    "connect_timeout": 10,
+    "receive_timeout": 60
 }
 ```
 
 响应：
-- Content-Type: application/octet-stream
+- Content-Type: audio/mpeg
 - 返回音频数据流
+
+说明：
+- `connector` 是 Python 对象，无法通过 HTTP JSON 传入。
 
 ## 使用示例
 
@@ -139,7 +180,11 @@ voices = response.json()['data']
 data = {
     "text": "你好，世界！",
     "voice": "zh-CN-YunxiNeural",
-    "file_name": "output.mp3"
+    "rate": "+10%",
+    "volume": "+0%",
+    "pitch": "+0Hz",
+    "audio_fname": "output.mp3",
+    "metadata_fname": "output.vtt"
 }
 response = requests.post('http://localhost:5000/tts', json=data)
 with open('output.mp3', 'wb') as f:
@@ -161,13 +206,13 @@ curl http://localhost:5000/voices
 # 文本转语音（下载）
 curl -X POST http://localhost:5000/tts \
     -H "Content-Type: application/json" \
-    -d '{"text":"你好，世界！", "voice":"zh-CN-YunxiNeural"}' \
+    -d '{"text":"你好，世界！", "voice":"zh-CN-YunxiNeural", "rate":"+10%", "pitch":"+2Hz"}' \
     --output output.mp3
 
 # 文本转语音（流式）
 curl -X POST http://localhost:5000/tts/stream \
     -H "Content-Type: application/json" \
-    -d '{"text":"你好，世界！", "voice":"zh-CN-YunxiNeural"}' \
+    -d '{"text":"你好，世界！", "voice":"zh-CN-YunxiNeural", "rate":"+10%"}' \
     --output stream_output.mp3
 ```
 

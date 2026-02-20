@@ -56,6 +56,12 @@ Retrieve all supported voice options.
 GET /voices
 ```
 
+Query parameters:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `proxy` | string | No | None | Proxy URL passed to `edge_tts.list_voices(proxy=...)` |
+
 Response example:
 ```json
 {
@@ -86,9 +92,35 @@ Request body:
 {
     "text": "Hello, World!",
     "voice": "en-US-GuyNeural",    // Optional, defaults to "zh-CN-YunxiNeural"
-    "file_name": "hello.mp3"       // Optional, defaults to "test.mp3"
+    "rate": "+20%",
+    "volume": "+0%",
+    "pitch": "+0Hz",
+    "proxy": "http://127.0.0.1:7890",
+    "connect_timeout": 10,
+    "receive_timeout": 60,
+    "audio_fname": "hello.mp3",
+    "metadata_fname": "hello.vtt"
 }
 ```
+
+Supported request parameters:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `text` | string | Yes | - | Input text |
+| `voice` | string | No | `zh-CN-YunxiNeural` | Voice name |
+| `rate` | string | No | `+0%` | Speaking rate |
+| `volume` | string | No | `+0%` | Volume gain |
+| `pitch` | string | No | `+0Hz` | Pitch |
+| `proxy` | string/null | No | `None` | Proxy URL |
+| `connect_timeout` | number/null | No | `10` | Connection timeout (seconds) |
+| `receive_timeout` | number/null | No | `60` | Receive timeout (seconds) |
+| `audio_fname` | string | No | `/tmp/test.mp3` | Output audio file path |
+| `metadata_fname` | string/null | No | `None` | Metadata output path (`edge-tts` subtitles/metadata) |
+
+Compatibility aliases:
+- `file_name` is still supported as an alias of `audio_fname`.
+- `metadata_file` is still supported as an alias of `metadata_fname`.
 
 Response:
 - Content-Type: audio/mpeg
@@ -106,13 +138,22 @@ Request body:
 ```json
 {
     "text": "Hello, World!",
-    "voice": "en-US-GuyNeural"    // Optional, defaults to "zh-CN-YunxiNeural"
+    "voice": "en-US-GuyNeural",
+    "rate": "+20%",
+    "volume": "+0%",
+    "pitch": "+0Hz",
+    "proxy": "http://127.0.0.1:7890",
+    "connect_timeout": 10,
+    "receive_timeout": 60
 }
 ```
 
 Response:
-- Content-Type: application/octet-stream
+- Content-Type: audio/mpeg
 - Returns audio stream
+
+Note:
+- `connector` is a Python object and is not accepted through HTTP JSON.
 
 ## Usage Examples
 
@@ -129,7 +170,11 @@ voices = response.json()['data']
 data = {
     "text": "Hello, World!",
     "voice": "en-US-GuyNeural",
-    "file_name": "output.mp3"
+    "rate": "+10%",
+    "volume": "+0%",
+    "pitch": "+0Hz",
+    "audio_fname": "output.mp3",
+    "metadata_fname": "output.vtt"
 }
 response = requests.post('http://localhost:5000/tts', json=data)
 with open('output.mp3', 'wb') as f:
@@ -151,13 +196,13 @@ curl http://localhost:5000/voices
 # Text-to-Speech (Download)
 curl -X POST http://localhost:5000/tts \
     -H "Content-Type: application/json" \
-    -d '{"text":"Hello, World!", "voice":"en-US-GuyNeural"}' \
+    -d '{"text":"Hello, World!", "voice":"en-US-GuyNeural", "rate":"+10%", "pitch":"+2Hz"}' \
     --output output.mp3
 
 # Text-to-Speech (Streaming)
 curl -X POST http://localhost:5000/tts/stream \
     -H "Content-Type: application/json" \
-    -d '{"text":"Hello, World!", "voice":"en-US-GuyNeural"}' \
+    -d '{"text":"Hello, World!", "voice":"en-US-GuyNeural", "rate":"+10%"}' \
     --output stream_output.mp3
 ```
 
